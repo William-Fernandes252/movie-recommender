@@ -1,0 +1,26 @@
+[flake8]
+max-line-length = 88
+max-complexity = 18
+ignore = E203, E266, W503, D100, D104, D106, D101, D102
+docstring-convention = google
+per-file-ignores =
+    __init__.py:F401
+    urls.py:D411, D212
+    wsgi.py:D212
+    asgi.py:D212
+    settings.py:D212
+exclude = .git,
+    __pycache__,
+    setup.py,
+    build,
+    dist,
+    docs,
+    releases,
+    .venv,
+    .tox,
+    .mypy_cache,
+    .pytest_cache,
+    .vscode,
+    .github,
+    # By default test codes will be linted.
+    # tests

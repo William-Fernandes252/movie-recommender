@@ -1,0 +1,35 @@
+volumes:
+    postgres_data:
+    redis_data:
+
+
+services:
+    django:
+        build: &django-build
+            context: .
+            dockerfile: ./docker/development/django/Dockerfile
+        depends_on:
+            - postgres
+        volumes: &django-volumes
+            - .:/app:z
+        env_file: &env-file
+            - .env.development.local
+        ports:
+            - '8010:8000'
+        command: /start
+
+    postgres:
+        image: postgres
+        volumes:
+            - postgres_data:/var/lib/postgresql/data:Z
+        env_file: *env-file
+        expose:
+            - 5432
+
+    redis:
+        image: redis
+        expose:
+            - 6379
+        volumes:
+            - redis_data:/data
+        entrypoint: redis-server --appendonly yes

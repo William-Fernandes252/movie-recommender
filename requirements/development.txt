@@ -1,0 +1,10 @@
+-r ./base.txt
+
+black==24.2.*
+isort==5.8.0
+flake8==3.9.2
+flake8-docstrings==1.6.0
+mypy==0.900
+pytest==7.0.0
+pytest-cov==2.12.0
+Faker==23.2.1

@@ -54,7 +54,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS: list[str] = []
 
-LOCAL_APPS: list[str] = []
+LOCAL_APPS: list[str] = ["auth"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -133,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Authentication
 
-AUTH_USER_MODEL = "auth.User"
+AUTH_USER_MODEL = "recommender_auth.User"
 
 
 # Internationalization

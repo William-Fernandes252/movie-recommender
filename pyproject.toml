@@ -28,6 +28,7 @@ optional-dependencies = { "dev" = [
     "pytest==7.0.0",
     "pytest-cov==2.12.0",
     "Faker==23.2.1",
+    "factory_boy==3.3.0",
 ] }
 requires-python = "==3.11.*"
 readme = "README.md"
@@ -51,3 +52,9 @@ exclude = '''
   | dist
 )/
 '''
+
+[tool.pytest.ini_options]
+addopts = "--cov=src --no-migrations --no-cov-on-fail"
+filterwarnings = ["error", "ignore::DeprecationWarning"]
+pythonpath = ["src", "."]
+DJANGO_SETTINGS_MODULE = "config.settings"

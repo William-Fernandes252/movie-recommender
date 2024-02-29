@@ -10,3 +10,6 @@ pytest-cov==2.12.0
 pytest-django==4.8.0
 Faker==23.2.1
 factory_boy==3.3.0
+types-requests==2.31.0.20240218
+responses==0.25.0
+pytest-mock==3.12.0

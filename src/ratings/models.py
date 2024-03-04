@@ -22,7 +22,9 @@ class Rating(models.Model):
     user = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="ratings"
     )
-    value = models.SmallIntegerField(null=True, blank=True)
+    value = models.SmallIntegerField(
+        null=True, blank=True, choices=RatingChoices.choices
+    )
     created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
 

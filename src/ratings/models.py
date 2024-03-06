@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from ratings.querysets import RatingQuerySet
+from . import managers
 
 
 class RatingChoices(models.IntegerChoices):
@@ -17,7 +17,7 @@ class RatingChoices(models.IntegerChoices):
 
 
 class Rating(models.Model):
-    objects = RatingQuerySet.as_manager()
+    objects = managers.RatingManager()
 
     user = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="ratings"

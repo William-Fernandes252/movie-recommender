@@ -1,7 +1,7 @@
-from django.db.models import QuerySet
+from django.db import models
 
 
-class RatingQuerySet(QuerySet):
+class RatingQuerySet(models.QuerySet):
     def active(self):
         """Return only active ratings."""
         return self.filter(active=True)
@@ -17,3 +17,6 @@ class RatingQuerySet(QuerySet):
     def deactivate(self):
         """Deactivates the selected ratings."""
         return self.update(active=False)
+
+    def average(self):
+        return self.aggregate(average=models.Avg("value"))["average"]

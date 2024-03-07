@@ -4,6 +4,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
+
 from ratings.managers import RatingManager
 from ratings.models import Rating
 
@@ -52,4 +53,4 @@ class Movie(TimeStampedModel, models.Model):
 
     def __str__(self):
         """Returns the title of the movie."""
-        return self.title
+        return self.title + f" ({self.released.year})" if self.released else ""

@@ -8,7 +8,7 @@ from .models import Rating
 
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
-    list_display = ("user", "value", "content_type", "object_id", "created", "active")
+    list_display = ("content_object", "user", "value", "created", "active")
     list_filter = ("active", "created")
     search_fields = ("user", "value", "content_type", "object_id")
     ordering = ("created",)

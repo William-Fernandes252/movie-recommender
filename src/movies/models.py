@@ -4,14 +4,17 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
-
 from ratings.managers import RatingManager
 from ratings.models import Rating
 
-MOVIE_RATING_RECALCULATE_MINUTES = 10
+from movies import managers
+
+from .querysets import MOVIE_RATING_RECALCULATE_MINUTES
 
 
 class Movie(TimeStampedModel, models.Model):
+    objects = managers.MovieManager()
+
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     title = models.CharField(max_length=255, unique=True)
     overview = models.TextField()

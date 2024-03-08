@@ -9,8 +9,6 @@ from ratings.models import Rating
 
 from movies import managers
 
-from .querysets import MOVIE_RATING_RECALCULATE_MINUTES
-
 
 class Movie(TimeStampedModel, models.Model):
     objects = managers.MovieManager()
@@ -26,19 +24,6 @@ class Movie(TimeStampedModel, models.Model):
     rating_count = models.PositiveIntegerField(blank=True, null=True)
     rating_last_updated = models.DateTimeField(blank=True, null=True)
 
-    def rating_average_display(self):
-        """Returns the rating_average if it exists, otherwise returns 0."""
-        if not self.rating_last_updated:
-            return self.update_ratings_average()
-
-        now = timezone.now()
-        if self.rating_last_updated > now - timezone.timedelta(
-            minutes=MOVIE_RATING_RECALCULATE_MINUTES
-        ):
-            return self.rating_average
-
-        return self.update_ratings_average()
-
     def get_ratings_average(self):
         """Calculates the ratings average."""
         return self.ratings.average()
@@ -47,12 +32,13 @@ class Movie(TimeStampedModel, models.Model):
         """Calculates the number of ratings for the movie."""
         return self.ratings.count()
 
-    def update_ratings_average(self):
+    def update_ratings_average(self, save=True):
         """Updates the rating_average, rating_count, and rating_last_updated fields."""
         self.rating_average = self.get_ratings_average()
         self.rating_count = self.get_ratings_count()
         self.rating_last_updated = timezone.now()
-        self.save()
+        if save:
+            self.save()
 
     def __str__(self):
         """Returns the title of the movie."""

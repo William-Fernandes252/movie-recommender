@@ -1,3 +1,5 @@
+from celery import shared_task
+
 from movies import managers, models
 
 
@@ -9,6 +11,9 @@ def update_movie_ratings(all=False, count: int | None = None):
         only movies with outdated ratings information are updated otherwise.
         Defaults to False.
         count (int, optional): The number of movies to update. Defaults to None.
+
+    Returns:
+        int: The number of movies updated.
     """
     queryset: managers.MovieManager = models.Movie.objects.all()
     if not all:
@@ -21,7 +26,10 @@ def update_movie_ratings(all=False, count: int | None = None):
     for movie in movies:
         movie.update_ratings_average()
 
+    return len(movies)
 
+
+@shared_task(name="update_movie_ratings_outdated")
 def update_movie_ratings_outdated():
     """Updates outdated movies ratings data."""
-    update_movie_ratings()
+    return update_movie_ratings()

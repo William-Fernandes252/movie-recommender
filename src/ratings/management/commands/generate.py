@@ -1,9 +1,7 @@
-import random
-
 from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
 
-from auth.models import User
+from ratings.tasks import generate_fake_ratings
 
 
 class Command(BaseCommand):
@@ -27,23 +25,16 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         from movies.models import Movie
 
-        from movies.tests.factories import MovieRatingFactory
         from ratings.models import Rating
 
         total = kwargs["total"]
         show_total = kwargs["show_total"]
 
-        movie_ids = Movie.objects.values_list("id", flat=True)
-        user_ids = User.objects.values_list("id", flat=True)
-        for _ in range(total):
-            try:
-                MovieRatingFactory.create(
-                    content_object=Movie.objects.get(pk=random.choice(movie_ids)),
-                    user=User.objects.get(pk=random.choice(user_ids)),
-                )
-            except Exception as exc:
-                self.stdout.write(self.style.ERROR(str(exc)))
-                return
+        try:
+            generate_fake_ratings(total)
+        except Exception as exc:
+            self.stdout.write(self.style.ERROR(str(exc)))
+            return
 
         self.stdout.write(self.style.SUCCESS(f"{total} ratings created successfully"))
 

@@ -42,10 +42,20 @@ COPY ./docker/${BUILD_ENV}/django/entrypoint.sh /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint
 
-# Copy the start script
+# Copy the start scripts
+
+## Django
 COPY ./docker/${buildEnv}/django/start.sh /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
+## Celery Worker
+COPY ./docker/${buildEnv}/django/celery/worker/start.sh /start-celeryworker
+RUN sed -i 's/\r$//g' /start-celeryworker
+RUN chmod +x /start-celeryworker
+## Celery Beat
+COPY ./docker/${buildEnv}/django/celery/beat/start.sh /start-celerybeat
+RUN sed -i 's/\r$//g' /start-celerybeat
+RUN chmod +x /start-celerybeat
 
 # Copy application code to WORKDIR
 COPY . ${appHome}

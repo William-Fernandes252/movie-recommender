@@ -169,3 +169,9 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
+CELERY_BEAT_SCHEDULE = {
+    "update_outdated_movie_ratings_every_10_min": {
+        "task": "update_movie_ratings_outdated",
+        "schedule": 60 * 10,
+    },
+}

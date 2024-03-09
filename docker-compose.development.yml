@@ -4,7 +4,7 @@ volumes:
 
 
 services:
-    django:
+    django: &django
         build: &django-build
             context: .
             dockerfile: ./docker/development/django/Dockerfile
@@ -33,3 +33,19 @@ services:
         volumes:
             - redis_data:/data
         entrypoint: redis-server --appendonly yes
+
+    worker:
+        <<: *django
+        depends_on:
+            - redis
+            - postgres
+        ports: []
+        command: /start-celeryworker
+
+    beat:
+        <<: *django
+        depends_on:
+            - redis
+            - postgres
+        ports: []
+        command: /start-celerybeat

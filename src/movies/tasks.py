@@ -1,4 +1,8 @@
 from celery import shared_task
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Avg, Count
+from django.utils import timezone
+from ratings.models import Rating
 
 from movies import managers, models
 
@@ -15,18 +19,31 @@ def update_movie_ratings(all=False, count: int | None = None):
     Returns:
         int: The number of movies updated.
     """
-    queryset: managers.MovieManager = models.Movie.objects.all()
+    content_type = ContentType.objects.get_for_model(models.Movie)
+
+    aggregated_ratings = (
+        Rating.objects.filter(content_type=content_type)
+        .values("object_id")
+        .annotate(average=Avg("value"), count=Count("object_id"))
+    )
+
+    queryset: managers.MovieManager = models.Movie.objects.all().order_by(
+        "rating_last_updated"
+    )
     if not all:
         queryset = queryset.filter_outdated_rating()
-    queryset = queryset.order_by("rating_last_updated")
-    if count:
-        queryset = queryset[:count]
 
-    movies: list[models.Movie] = [movie for movie in queryset]
-    for movie in movies:
-        movie.update_ratings_average()
-
-    return len(movies)
+    updated = 0
+    for agg in aggregated_ratings:
+        queryset.filter(pk=agg["object_id"]).update(
+            ratings_average=agg["average"],
+            ratings_count=agg["count"],
+            rating_last_updated=timezone.now(),
+        )
+        updated += 1
+        if count and updated >= count:
+            break
+    return updated
 
 
 @shared_task(name="update_movie_ratings_outdated")

@@ -25,8 +25,10 @@ class Command(BaseCommand):
         all = kwargs["all"]
         count = kwargs["count"]
         try:
-            update_movie_ratings(all, count)
+            updated = update_movie_ratings(all, count)
+            self.stdout.write(
+                self.style.SUCCESS(f"Ratings of {updated} movies updated successfully")
+            )
         except Exception as exc:
             self.stdout.write(self.style.ERROR(str(exc)))
             return
-        self.stdout.write(self.style.SUCCESS("Movie ratings updated successfully"))

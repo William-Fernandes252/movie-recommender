@@ -1,4 +1,5 @@
 import uuid
+from decimal import Decimal
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
@@ -32,10 +33,12 @@ class Movie(TimeStampedModel, models.Model):
         """Calculates the number of ratings for the movie."""
         return self.ratings.count()
 
-    def update_ratings_average(self, save=True):
-        """Updates the rating_average, rating_count, and rating_last_updated fields."""
-        self.ratings_average = self.get_ratings_average()
-        self.ratings_count = self.get_ratings_count()
+    def update_ratings(
+        self, average: Decimal | None = None, count: int | None = None, save=True
+    ):
+        """Updates the ratings related fields."""
+        self.ratings_average = average or self.get_ratings_average()
+        self.ratings_count = count or self.get_ratings_count()
         self.rating_last_updated = timezone.now()
         if save:
             self.save()

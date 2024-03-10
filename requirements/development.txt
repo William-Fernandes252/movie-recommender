@@ -14,3 +14,4 @@ types-requests==2.31.0.20240218
 responses==0.25.0
 pytest-mock==3.12.0
 watchfiles==0.21.0
+djlint==1.34.1

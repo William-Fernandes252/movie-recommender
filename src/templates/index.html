@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<!-- djlint:off -->
+<html lang="en">
+    <!-- djlint:on -->
+    <head>
+        <title>
+            {% block head_title %}
+                Recommender
+            {% endblock head_title %}
+        </title>
+        <meta name="description"
+              content="Web application that recommends movies based on users reviews using collaborative filtering." />
+        {% include "partials/head.html" %}
+        {% block extra_head %}
+        {% endblock extra_head %}
+    </head>
+    <body class="bg-light vh-100 p-3"
+          hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        {% include "partials/messages.html" %}
+        {% include "partials/navbar.html" %}
+        {% block body %}
+            {% block content %}
+            {% endblock content %}
+        {% endblock body %}
+        {% block extra_body %}
+        {% endblock extra_body %}
+        {% include "partials/scripts.html" %}
+    </body>
+</html>

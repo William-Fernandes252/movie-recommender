@@ -1,0 +1,33 @@
+{% load get_dict_val %}
+{% with user_ratings|get_dict_val:object.id as current_rating %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3>
+                {{ object.title }}
+                {% if object.released %}<span class="small">{{ object.released.year }}</span>{% endif %}
+            </h3>
+            <small class="text-body-secondary">{{ object.id }}</small>
+            <p class="card-text">{{ object.overview }}</p>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="btn-group">
+                    {% if object.get_absolute_url not in request.path %}
+                        <a type="button"
+                           class="btn btn-sm btn-outline-secondary"
+                           href="{{ object.get_absolute_url }}">View</a>
+                    {% endif %}
+                </div>
+                <div class="d-flex justify-content-between align-items-start">
+                    {% if skip %}
+                        <button hx-post={% url "rate-movie" %} class="btn btn-outline-secondary me-2">Skip</button>
+                    {% endif %}
+                    <div>
+                        {% include "ratings/partials/rating_choices.html" with object_id=object.id current_rating=current_rating %}
+                        {% if object.ratings_average is not None %}
+                            <small class="text-muted">{{ object.ratings_average }} ({{ object.ratings_count }})</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endwith %}

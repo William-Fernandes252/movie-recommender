@@ -3,12 +3,13 @@ from decimal import Decimal
 
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
-
-from movies import managers
 from ratings.managers import RatingManager
 from ratings.models import Rating
+
+from movies import managers
 
 
 class Movie(TimeStampedModel, models.Model):
@@ -24,6 +25,9 @@ class Movie(TimeStampedModel, models.Model):
     )
     ratings_count = models.PositiveIntegerField(blank=True, null=True)
     rating_last_updated = models.DateTimeField(blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse("movie-detail", kwargs={"pk": self.pk})
 
     def get_ratings_average(self):
         """Calculates the ratings average."""

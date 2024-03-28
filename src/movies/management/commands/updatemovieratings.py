@@ -10,7 +10,7 @@ class Command(BaseCommand):
             nargs="?",
             type=int,
             help="Number of movies to update",
-            default=1_000,
+            default=None,
         )
         parser.add_argument(
             "--all",

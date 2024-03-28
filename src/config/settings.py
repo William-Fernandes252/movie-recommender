@@ -53,7 +53,15 @@ DJANGO_APPS = [
     "django.contrib.postgres",
 ]
 
-THIRD_PARTY_APPS: list[str] = ["django_celery_beat", "django_celery_results"]
+THIRD_PARTY_APPS: list[str] = [
+    "django_celery_beat",
+    "django_celery_results",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "django_htmx",
+]
 
 LOCAL_APPS: list[str] = ["auth", "movies", "ratings"]
 
@@ -68,10 +76,15 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 
 ROOT_URLCONF = "config.urls"
+
+
+SITE_ID = 1
 
 
 # Templates
@@ -79,7 +92,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -87,6 +100,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "ratings.context_processors.rating_choices",
             ],
         },
     },
@@ -135,6 +149,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Authentication
 
 AUTH_USER_MODEL = "recommender_auth.User"
+
+LOGIN_URL = "/accounts/login/"
+
+LOGIN_REDIRECT_URL = "/"
+
+ACCOUNT_AUTHENTICATION_METHOD = "username"
+ACCOUNT_EMAIL_VERIFICATION = None
 
 
 # Internationalization

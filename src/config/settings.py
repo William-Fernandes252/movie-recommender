@@ -63,7 +63,7 @@ THIRD_PARTY_APPS: list[str] = [
     "django_htmx",
 ]
 
-LOCAL_APPS: list[str] = ["auth", "movies", "ratings"]
+LOCAL_APPS: list[str] = ["auth", "movies", "ratings", "exports"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -194,5 +194,9 @@ CELERY_BEAT_SCHEDULE = {
     "update_outdated_movie_ratings_every_10_min": {
         "task": "update_movie_ratings_outdated",
         "schedule": 60 * 10,
+    },
+    "export_movies_to_csv_every_1_hour": {
+        "task": "export_movie_ratings_dataset",
+        "schedule": 60 * 60,
     },
 }

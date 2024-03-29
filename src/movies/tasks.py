@@ -2,9 +2,10 @@ from celery import shared_task
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Avg, Count
 from django.utils import timezone
-from ratings.models import Rating
 
+from exports import utils
 from movies import managers, models
+from ratings.models import Rating
 
 
 def update_movie_ratings(all=False, count: int | None = None):
@@ -50,3 +51,17 @@ def update_movie_ratings(all=False, count: int | None = None):
 def update_movie_ratings_outdated():
     """Updates outdated movies ratings data."""
     return update_movie_ratings()
+
+
+@shared_task(name="export_movie_ratings_dataset")
+def export_movie_ratings_dataset(filename: str | None = None) -> str | None:
+    """Exports a dataset with the movies ratings average and count.
+
+    Args:
+        filename (str | None, optional): A name for the destination file. Defaults to `movies_ratings`.
+
+    Returns:
+        Export | None: The export file path.
+    """
+    export = utils.export_dataset("movies", "movie", filename)
+    return export.file.path if export else None

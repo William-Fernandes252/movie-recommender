@@ -6,16 +6,17 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
-from ratings.managers import RatingManager
-from ratings.models import Rating
 
 from movies import managers
+from ratings.managers import RatingManager
+from ratings.models import Rating
 
 
 class Movie(TimeStampedModel, models.Model):
     objects = managers.MovieManager()
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    source_id = models.BigIntegerField(unique=True, blank=True, null=True)
     title = models.CharField(max_length=255, unique=True)
     overview = models.TextField()
     released = models.DateField(blank=True, null=True)

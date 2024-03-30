@@ -20,8 +20,8 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **kwargs):
-        from auth.models import User
-        from auth.tests.factories import UserFactory
+        from users.models import User
+        from users.tests.factories import UserFactory
 
         total = kwargs["total"]
         try:

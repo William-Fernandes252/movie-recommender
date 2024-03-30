@@ -4,8 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from factory import LazyAttribute, SelfAttribute, SubFactory
 from factory.django import DjangoModelFactory
 
-from auth.tests.factories import UserFactory
 from ratings import models
+from users.tests.factories import UserFactory
 
 
 class RatingFactory(DjangoModelFactory):

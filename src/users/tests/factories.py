@@ -2,7 +2,7 @@ from factory import Sequence, post_generation
 from factory.django import DjangoModelFactory, DjangoOptions
 from faker import Faker
 
-from auth.models import User
+from users.models import User
 
 faker = Faker("en_US")
 

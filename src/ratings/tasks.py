@@ -2,9 +2,9 @@ import random
 
 from celery import shared_task
 
-from auth.models import User
 from movies.models import Movie
 from movies.tests.factories import MovieRatingFactory
+from users.models import User
 
 
 @shared_task(name="generate_fake_ratings")

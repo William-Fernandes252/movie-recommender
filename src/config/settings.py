@@ -63,7 +63,7 @@ THIRD_PARTY_APPS: list[str] = [
     "django_htmx",
 ]
 
-LOCAL_APPS: list[str] = ["auth", "movies", "ratings", "exports"]
+LOCAL_APPS: list[str] = ["users", "movies", "ratings", "exports"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -148,7 +148,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Authentication
 
-AUTH_USER_MODEL = "recommender_auth.User"
+AUTH_USER_MODEL = "users.User"
 
 LOGIN_URL = "/accounts/login/"
 

@@ -1,4 +1,3 @@
-import uuid
 from decimal import Decimal
 
 from django.contrib.contenttypes.fields import GenericRelation
@@ -13,10 +12,6 @@ from ratings.models import Rating
 
 
 class Movie(TimeStampedModel, models.Model):
-    objects = managers.MovieManager()
-
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    source_id = models.BigIntegerField(unique=True, blank=True, null=True)
     title = models.CharField(max_length=255, unique=True)
     overview = models.TextField()
     released = models.DateField(blank=True, null=True)
@@ -26,6 +21,8 @@ class Movie(TimeStampedModel, models.Model):
     )
     ratings_count = models.PositiveIntegerField(blank=True, null=True)
     rating_last_updated = models.DateTimeField(blank=True, null=True)
+
+    objects = managers.MovieManager()
 
     def get_absolute_url(self):
         return reverse("movie-detail", kwargs={"pk": self.pk})

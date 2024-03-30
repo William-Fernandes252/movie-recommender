@@ -1,7 +1,7 @@
 import pytest
 from django.core.management import call_command
 
-from auth.models import User
+from users.models import User
 
 
 @pytest.mark.django_db

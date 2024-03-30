@@ -29,5 +29,5 @@ class Rating(models.Model):
     active = models.BooleanField(default=True)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.UUIDField()
+    object_id = models.BigIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")

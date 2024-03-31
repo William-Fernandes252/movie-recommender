@@ -1,18 +1,17 @@
 from collections.abc import Sequence
 from typing import Any
 
-from django.db.models.base import Model as Model
+from django.db.models import F
 from django.db.models.query import QuerySet
 from django.views import generic
-
 from ratings.mixins import UserRatingsContextMixin
 
 from . import models
 
 SORTING_CHOICES = {
-    "popular": "-ratings_average",
+    "popular": F("ratings_average").desc(nulls_last=True),
     "unpopular": "ratings_average",
-    "recent": "-released",
+    "recent": F("released").desc(nulls_last=True),
     "old": "released",
 }
 
@@ -22,12 +21,12 @@ class MovieListView(UserRatingsContextMixin, generic.ListView):
     model = models.Movie
 
     def get_ordering(self) -> Sequence[str]:
-        default_ordering = self.request.session.get(
-            "default_ordering", "-ratings_average"
-        )
-        if sort := self.request.GET.get("sort"):
-            self.request.session["movie_sort_order"] = sort
-            return [sort]
+        default_ordering = SORTING_CHOICES[
+            self.request.session.get("default_ordering", "popular")
+        ]
+        if key := self.request.GET.get("sort"):
+            self.request.session["movie_sort_order"] = key
+            return [SORTING_CHOICES[key]]
         return [default_ordering]
 
     def get_template_names(self) -> list[str]:
@@ -37,7 +36,7 @@ class MovieListView(UserRatingsContextMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["sorting_choices"] = SORTING_CHOICES
+        context["sorting_choices"] = list(SORTING_CHOICES.keys())
         return context
 
 
@@ -46,7 +45,7 @@ class MovieDetailView(UserRatingsContextMixin, generic.DetailView):
 
 
 class MovieInfiniteRatingView(MovieDetailView):
-    def get_object(self, queryset: QuerySet[Any] | None = None) -> Model:
+    def get_object(self, queryset: QuerySet[Any] | None = None) -> models.Movie:
         user = self.request.user
         exclude_ids = []
         if user.is_authenticated:

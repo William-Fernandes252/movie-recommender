@@ -6,9 +6,9 @@
                     class="form-control"
                     hx-get="/movies/"
                     hx-target="#target-list-change">
-                {% for key, value in sorting_choices.items %}
-                    <option {% if request.session.movie_sort_order == value %}selected{% endif %}
-                            value="{{ value }}">{{ key|title }}</option>
+                {% for key in sorting_choices %}
+                    <option {% if request.session.movie_sort_order == key %}selected{% endif %}
+                            value="{{ key }}">{{ key|title }}</option>
                 {% endfor %}
             </select>
         </div>

@@ -2,10 +2,10 @@ from celery import shared_task
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Avg, Count
 from django.utils import timezone
-
 from exports import utils
-from movies import managers, models
 from ratings.models import Rating
+
+from movies import managers, models
 
 
 def update_movie_ratings(all=False, count: int | None = None):
@@ -39,6 +39,7 @@ def update_movie_ratings(all=False, count: int | None = None):
         queryset.filter(pk=agg["object_id"]).update(
             ratings_average=agg["average"],
             ratings_count=agg["count"],
+            score=agg["average"] * agg["count"],
             rating_last_updated=timezone.now(),
         )
         updated += 1

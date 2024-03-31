@@ -21,6 +21,7 @@ class Movie(TimeStampedModel, models.Model):
     )
     ratings_count = models.PositiveIntegerField(blank=True, null=True)
     rating_last_updated = models.DateTimeField(blank=True, null=True)
+    score = models.FloatField(blank=True, null=True)
 
     objects = managers.MovieManager()
 
@@ -41,6 +42,7 @@ class Movie(TimeStampedModel, models.Model):
         """Updates the ratings related fields."""
         self.ratings_average = average or self.get_ratings_average()
         self.ratings_count = count or self.get_ratings_count()
+        self.score = self.ratings_average * self.ratings_count
         self.rating_last_updated = timezone.now()
         if save:
             self.save()

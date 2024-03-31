@@ -9,3 +9,6 @@ class MovieManager(models.Manager):
 
     def filter_outdated_rating(self):
         return self.get_queryset().filter_outdated_rating()
+
+    def popular(self, reverse=False):
+        return self.get_queryset().popular_on_demand(reverse=reverse)

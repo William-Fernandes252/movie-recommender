@@ -200,3 +200,8 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": 60 * 60,
     },
 }
+
+# Media
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR.parent / "media"

@@ -12,3 +12,6 @@ dj_database_url==2.1.0
 psycopg[binary]==3.1.*
 django-extensions==3.2.3
 requests==2.31.0
+pandas==2.2.1
+jupyter==1.0.0
+ipython==8.0.1

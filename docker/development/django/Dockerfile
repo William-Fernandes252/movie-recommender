@@ -56,6 +56,10 @@ RUN chmod +x /start-celeryworker
 COPY ./docker/${buildEnv}/django/celery/beat/start.sh /start-celerybeat
 RUN sed -i 's/\r$//g' /start-celerybeat
 RUN chmod +x /start-celerybeat
+## Jupyter Lab
+COPY ./docker/${buildEnv}/django/jupyter/start.sh /start-jupyter
+RUN sed -i 's/\r$//g' /start-jupyter
+RUN chmod +x /start-jupyter
 
 # Copy application code to WORKDIR
 COPY . ${appHome}

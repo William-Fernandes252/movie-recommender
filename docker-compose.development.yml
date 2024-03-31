@@ -15,8 +15,14 @@ services:
         env_file: &env-file
             - .env.development.local
         ports:
-            - '8010:8000'
+            - 8000:8000
         command: /start
+
+    jupyter:
+        <<: *django
+        ports:
+            - 8888:8888
+        command: /start-jupyter
 
     postgres:
         image: postgres

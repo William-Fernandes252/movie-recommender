@@ -1,3 +1,4 @@
 <div hx-get="{% if endless_path %}{{ endless_path }}{% else %}/movies/infinite/{% endif %}"
      hx-trigger="did-skip-movie from:body, did-rate-movie from:body"
-     hx-swap="outerHTML">{% include "movies/partials/movie_card.html" with object=object skip=True %}</div>
+     hx-swap="outerHTML"
+     class="col mt-2">{% include "movies/partials/movie_card.html" with object=object skip=True %}</div>

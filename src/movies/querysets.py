@@ -15,6 +15,12 @@ class MovieQuerySet(models.QuerySet):
             )
         )
 
+    def popular(self, reverse=False):
+        order_by = models.F("score")
+        if not reverse:
+            order_by = order_by.desc(nulls_last=True)
+        return self.order_by(order_by)
+
     def popular_on_demand(self, reverse=False):
         order_by = models.F("computed_score")
         if not reverse:

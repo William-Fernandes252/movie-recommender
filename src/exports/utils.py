@@ -3,10 +3,11 @@ import tempfile
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.files import File
+from django.core.files.storage import Storage, default_storage
 from django.db.models import F, QuerySet
+from ratings.models import Rating
 
 from exports.models import Export
-from ratings.models import Rating
 
 
 def generate_ratings_dataset(app_label: str, model: str) -> QuerySet:
@@ -61,3 +62,18 @@ def export_dataset(
             (f"{model}_ratings" if not filename else filename) + ".csv", File(tmp)
         )
         return export
+
+
+def save(path: str, file: File, overwrite=False, storage: Storage = default_storage):
+    """Export a file directly to a project storage.
+
+    Args:
+        path (str): The destination path.
+        file (File): The file to be saved.
+        overwrite (bool, optional): If the destination should be overwritten. Defaults to False.
+        storage (Storage, optional): The storage instance to be used.
+        Defaults to `default_storage`.
+    """
+    if overwrite is True and storage.exists(path):
+        storage.delete(path)
+    storage.save(path, file)

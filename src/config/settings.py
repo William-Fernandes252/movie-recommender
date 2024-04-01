@@ -63,7 +63,14 @@ THIRD_PARTY_APPS: list[str] = [
     "django_htmx",
 ]
 
-LOCAL_APPS: list[str] = ["users", "movies", "ratings", "exports", "suggestions"]
+LOCAL_APPS: list[str] = [
+    "users",
+    "movies",
+    "ratings",
+    "exports",
+    "suggestions",
+    "dashboard",
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 

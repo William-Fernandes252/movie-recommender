@@ -1,19 +1,38 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from suggestions.models import Suggestion
 
 from movies import querysets
-from suggestions.models import Suggestion
 
 
 class MovieManager(models.Manager):
-    def get_queryset(self):
+    def get_queryset(self) -> querysets.MovieQuerySet:
         return querysets.MovieQuerySet(self.model, using=self._db)
 
-    def filter_outdated_rating(self):
+    def filter_outdated_rating(self) -> querysets.MovieQuerySet:
         return self.get_queryset().filter_outdated_rating()
 
-    def popular(self, reverse=False):
+    def popular(self, reverse=False) -> querysets.MovieQuerySet:
         return self.get_queryset().popular_on_demand(reverse=reverse)
+
+    def order_by_ids(self, ids: list[int]) -> querysets.MovieQuerySet:
+        """Orders the queryset by the given IDs.
+
+        Args:
+            ids (list[int]): The IDs to order by.
+
+        Returns:
+            QuerySet: The ordered queryset.
+        """
+        return (
+            self.get_queryset()
+            .filter(pk__in=ids)
+            .order_by(
+                models.Case(
+                    *[models.When(pk=pk, then=pos) for pos, pk in enumerate(ids)]
+                )
+            )
+        )
 
     def recent_suggestions(
         self,

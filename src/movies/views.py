@@ -88,6 +88,11 @@ class MovieInfiniteRatingView(MovieDetailView):
 
 
 class MoviePopularRatingView(MovieInfiniteRatingView):
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["endless_path"] = "/movies/popular"
+        return context
+
     def get_object(self, *args, **kwargs) -> querysets.MovieQuerySet:
         movie_options_ids = self.exclude_already_rated(
             models.Movie.objects.popular()

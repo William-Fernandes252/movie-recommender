@@ -132,7 +132,8 @@ def batch_user_prediction(
 
     ctype = ContentType.objects.get_for_model(models.Movie)
     ids: list[int] = []
-    while start < max:
+    count = 0
+    while count < max:
         suggestions: list[Suggestion] = []
         for movie_id in movies_ids:
             users_covered = recent_suggestions.get(movie_id, [])
@@ -147,6 +148,7 @@ def batch_user_prediction(
                         value=model.predict(uid=user_id, iid=movie_id).est,
                     )
                 )
+            count += 1
         ids.extend(
             suggestion.id for suggestion in Suggestion.objects.bulk_create(suggestions)
         )

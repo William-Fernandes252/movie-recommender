@@ -3,25 +3,9 @@ from typing import Any
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import QuerySet
-from django.shortcuts import render
 from django.views.generic import ListView
 from movies.models import Movie
 from suggestions.models import Suggestion
-
-
-def index_view(request):
-    """Home view."""
-    context = {}
-    user = request.user
-    if not user.is_authenticated:
-        return render(request, "home.html", context)
-    context["endless_path"] = "/"
-    max_movies = 50
-    request.session["total-new-suggestions"] = 0
-    context["object_list"] = Movie.objects.all().order_by("?")[:max_movies]
-    if request.htmx:
-        return render(request, "movies/snippet/infinite.html", context)
-    return render(request, "dashboard/index.html", context)
 
 
 class IndexView(ListView, LoginRequiredMixin):
@@ -33,6 +17,9 @@ class IndexView(ListView, LoginRequiredMixin):
             rating__isnull=True,
             content_type=ContentType.objects.get_for_model(Movie),
         )
+
+        self.request.session["total_new_suggestions"] = suggestions_queryset.count()
+
         if suggestions_queryset.exists():
             movies_ids = suggestions_queryset.order_by("-value").values_list(
                 "object_id", flat=True

@@ -4,8 +4,8 @@ from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
 
 from movies.models import Movie
-
-from . import models
+from movies.tasks import batch_user_prediction
+from ratings import models
 
 
 @login_required
@@ -25,6 +25,20 @@ def rate_movie(request: HttpRequest):
     movie = get_object_or_404(Movie, pk=request.POST.get("object_id"))
     rating = request.POST.get("value")
     if rating:
+        items_rated = request.session.get("items_rated", 0)
+        items_rated += 1
+        request.session["items_rated"] = items_rated
+
+        start = request.session.get("total_new_suggestions", 0)
+        if items_rated % 5 == 0:
+            batch_user_prediction.delay(
+                users_ids=[request.user.id],
+                start=start,
+                offset=25,
+                max=25,
+                use_suggestions_up_to_days=None,
+            )
+
         models.Rating.objects.create(
             content_object=movie,
             user=request.user,

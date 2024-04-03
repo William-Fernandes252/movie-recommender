@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+from celery.schedules import crontab
 from decouple import config
 from dj_database_url import parse as db_url
 from django.contrib.messages import constants as message_constants
@@ -202,9 +203,26 @@ CELERY_BEAT_SCHEDULE = {
         "task": "update_movie_ratings_outdated",
         "schedule": 60 * 10,
     },
-    "export_movies_to_csv_every_1_hour": {
+    "update_movie_indexes_daily": {
+        "task": "update_movie_position_embeddings",
+        "schedule": crontab(hour=1, minute=0),
+    },
+    "export_movie_ratings_dataset_daily": {
         "task": "export_movie_ratings_dataset",
-        "schedule": 60 * 60,
+        "schedule": crontab(hour=1, minute=15),
+    },
+    "export_movies_dataset_daily": {
+        "task": "export_movies_dataset",
+        "schedule": crontab(hour=2, minute=30),
+    },
+    "train_and_export_movie_recommendation_model_daily": {
+        "task": "train_and_export_surprise_model",
+        "schedule": crontab(hour=3, minute=0),
+    },
+    "batch_create_movie_suggestions_daily": {
+        "task": "batch_user_prediction",
+        "schedule": crontab(hour=4, minute=30),
+        "kwargs": {"max": 5000, "offset": 200},
     },
 }
 

@@ -144,7 +144,7 @@ def export_model(
         if verbose:
             print(f"Saving model to {path} and {type}/latest.{ext}")
         save(path, File(temp))
-        save(_get_lastest_model_path(type, ext), File(temp))
+        save(_get_lastest_model_path(type, ext), File(temp), overwrite=True)
 
 
 def load_model(type="surprise", ext="pkl"):

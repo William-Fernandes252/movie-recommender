@@ -60,7 +60,7 @@ class Export(TimeStampedModel, models.Model):
         if self.latest and self.file:
             path = export_file_handler(self, self.filename)
             folder = path.parent.parent
-            save(folder / f"latest{path.suffix}", self.file, self.content_type)
+            save(folder / f"latest{path.suffix}", self.file, overwrite=True)
             Export.objects.filter(content_type=self.content_type).exclude(
                 pk=self.pk
             ).update(latest=False)

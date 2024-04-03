@@ -10,6 +10,7 @@ from django.db import models
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
 
+from exports import managers
 from exports.utils import save
 
 
@@ -36,6 +37,8 @@ class Export(TimeStampedModel, models.Model):
         null=True,
     )
     latest = models.BooleanField(default=True)
+
+    objects = managers.ExportManager()
 
     class Meta:
         ordering = ["-created"]

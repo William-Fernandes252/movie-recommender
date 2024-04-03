@@ -1,6 +1,7 @@
 from celery import shared_task
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, F, Window
+from django.db.models.functions import DenseRank
 from django.utils import timezone
 
 from exports import utils
@@ -162,3 +163,23 @@ def batch_user_prediction(
         )
 
     return ids
+
+
+@shared_task
+def update_movie_position_embeddings():
+    """Update the movies embeddings.
+
+    Returns:
+        int: The number of movies updated.
+    """
+    updated = 0
+    for movie in (
+        models.Movie.objects.all()
+        .annotate(embedding_index=Window(DenseRank(), order_by=[F("id").asc()]))
+        .annotate(new_index=F("embedding_index") - 1)
+    ):
+        if movie.index != getattr(movie, "new_index", None):
+            movie.index = getattr(movie, "new_index", None)
+            movie.save()
+            updated += 1
+    return updated

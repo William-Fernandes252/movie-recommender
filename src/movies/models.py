@@ -5,10 +5,10 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import TimeStampedModel
-
-from movies import managers
 from ratings.managers import RatingManager
 from ratings.models import Rating
+
+from movies import managers
 
 
 class Movie(TimeStampedModel, models.Model):
@@ -22,6 +22,9 @@ class Movie(TimeStampedModel, models.Model):
     ratings_count = models.PositiveIntegerField(blank=True, null=True)
     rating_last_updated = models.DateTimeField(blank=True, null=True)
     score = models.FloatField(blank=True, null=True)
+    index = models.BigIntegerField(
+        help_text="Position index for embeddings", blank=True, null=True
+    )
 
     objects = managers.MovieManager()
 

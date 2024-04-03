@@ -6,7 +6,7 @@ from . import models
 
 @admin.register(models.Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ("title", "released", "ratings_average", "ratings_count")
+    list_display = ("title", "index", "released", "ratings_average", "ratings_count")
     search_fields = ("@title", "@overview", "id")
     list_filter = ("released",)
     date_hierarchy = "released"
@@ -14,6 +14,7 @@ class MovieAdmin(admin.ModelAdmin):
         "created",
         "modified",
         "id",
+        "index",
         "ratings_average",
         "ratings_count",
         "rating_last_updated",

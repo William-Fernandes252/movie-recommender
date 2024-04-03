@@ -1,3 +1,4 @@
+import numpy
 from celery import shared_task
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Avg, Count, F, Window
@@ -161,7 +162,7 @@ def batch_user_prediction(
         )
 
     ctype = ContentType.objects.get_for_model(models.Movie)
-    ids: list[int] = []
+    ids = numpy.array([], dtype=int)
     count = 0
     while count < max:
         suggestions: list[Suggestion] = []
@@ -179,8 +180,12 @@ def batch_user_prediction(
                     )
                 )
             count += 1
-        ids.extend(
-            suggestion.id for suggestion in Suggestion.objects.bulk_create(suggestions)
+        numpy.append(
+            ids,
+            [
+                suggestion.id
+                for suggestion in Suggestion.objects.bulk_create(suggestions)
+            ],
         )
 
         start += offset
@@ -191,7 +196,7 @@ def batch_user_prediction(
             .values_list("id", flat=True)[start : start + offset]
         )
 
-    return ids
+    return ids.tolist()
 
 
 @shared_task(name="update_movie_position_embeddings")

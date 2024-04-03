@@ -15,8 +15,7 @@
         {% block extra_head %}
         {% endblock extra_head %}
     </head>
-    <body class="bg-light vh-100 p-3"
-          hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <body class="vh-100 p-3" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
         {% include "partials/messages.html" %}
         {% include "partials/navbar.html" %}
         {% block body %}

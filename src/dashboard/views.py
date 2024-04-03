@@ -4,12 +4,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.query import QuerySet
 from django.views.generic import ListView
+
 from movies.models import Movie
 from suggestions.models import Suggestion
 
 
-class IndexView(ListView, LoginRequiredMixin):
+class IndexView(LoginRequiredMixin, ListView):
     template_name = "dashboard/index.html"
+    paginate_by = 100
 
     def get_queryset(self) -> QuerySet[Any]:
         suggestions_queryset = Suggestion.objects.filter(

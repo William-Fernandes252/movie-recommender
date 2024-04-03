@@ -1,6 +1,6 @@
 {% load get_dict_val %}
 {% with user_ratings|get_dict_val:object.id as current_rating %}
-    <div class="card shadow-sm">
+    <div class="card shadow">
         <div class="card-body">
             <h3>
                 {{ object.title }}

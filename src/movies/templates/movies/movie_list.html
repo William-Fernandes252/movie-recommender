@@ -14,5 +14,7 @@
         </div>
     </div>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 pb-3"
-         id="target-list-change">{% include "movies/partials/movie_rows.html" with object_list=object_list %}</div>
+         id="target-list-change">
+        {% include "movies/partials/movie_rows.html" with object_list=object_list page_obj=page_obj %}
+    </div>
 {% endblock content %}

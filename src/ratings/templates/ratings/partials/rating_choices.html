@@ -3,7 +3,7 @@
       hx-target="find .success">
     <div class="success"></div>
     {% if object_id %}<input type="hidden" value="{{ object_id }}" name="object_id" />{% endif %}
-    <select name="value" class="form-control">
+    <select name="value" class="form-select form-select-sm">
         {% for choice in rating_choices %}
             {% if not choice %}
                 <option disabled selected>Pick a rating</option>

@@ -1,8 +1,8 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from suggestions.models import Suggestion
 
 from movies import querysets
+from suggestions.models import Suggestion
 
 
 class MovieManager(models.Manager):
@@ -68,3 +68,38 @@ class MovieManager(models.Manager):
                 data[item["movieId"]] = []
             data[item["movieId"]].append(item["userId"])
         return data
+
+    def to_dataset(self) -> models.QuerySet:
+        """Generates a dataset with the movies data.
+
+        The dataset is generated as a values queryset with the following columns:
+        - movieId
+        - movieIndex
+        - title
+        - releasedAt
+        - ratingsAverage
+        - ratingsCount
+
+        Returns:
+            QuerySet: The movies dataset.
+        """
+        return (
+            self.get_queryset()
+            .annotate(
+                **{
+                    "movieId": models.F("pk"),
+                    "movieIndex": models.F("index"),
+                    "releasedAt": models.F("released"),
+                    "ratingsAverage": models.F("ratings_average"),
+                    "ratingsCount": models.F("ratings_count"),
+                }
+            )
+            .values(
+                "movieId",
+                "movieIndex",
+                "title",
+                "releasedAt",
+                "ratingsAverage",
+                "ratingsCount",
+            )
+        )

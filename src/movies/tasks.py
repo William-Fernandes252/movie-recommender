@@ -4,7 +4,7 @@ from django.db.models import Avg, Count, F, Window
 from django.db.models.functions import DenseRank
 from django.utils import timezone
 
-from exports import utils
+from exports.models import Export
 from movies import managers, models
 from movies.services import ml
 from ratings.models import Rating
@@ -63,16 +63,45 @@ def export_movie_ratings_dataset(filename: str | None = None) -> str | None:
     """Exports a dataset with the movies ratings average and count.
 
     Args:
-        filename (str | None, optional): A name for the destination file. Defaults to `movies_ratings`.
+        filename (str | None, optional): A name for the destination file. Defaults to `movie_ratings`.
 
     Returns:
-        Export | None: The export file path.
+        str: The export file path.
     """
-    export = utils.export_dataset("movies", "movie", filename)
-    return export.file.path if export else None
+    return Export.from_dataset(
+        Rating.objects.to_dataset(
+            ContentType.objects.get_for_model(models.Movie),
+            item_column_name="movieId",
+        ),
+        fieldnames=["userId", "movieId", "rating", "createdAt"],
+        filename=filename or "movie_ratings",
+        content_type=ContentType.objects.get_for_model(Rating),
+    ).file.path
 
 
-@shared_task
+@shared_task(name="export_movies_dataset")
+def export_movies_dataset():
+    """Exports a dataset with the movies data.
+
+    Returns:
+        str: The export file path.
+    """
+    return Export.from_dataset(
+        models.Movie.objects.to_dataset(),
+        fieldnames=[
+            "movieId",
+            "movieIndex",
+            "title",
+            "releasedAt",
+            "ratingsAverage",
+            "ratingsCount",
+        ],
+        filename="movies",
+        content_type=ContentType.objects.get_for_model(models.Movie),
+    ).file.path
+
+
+@shared_task(name="train_and_export_surprise_model")
 def train_and_export_surprise_model(epochs: int = 20):
     """Trains a model using the Surprise library and exports it to a file.
 
@@ -87,7 +116,7 @@ def train_and_export_surprise_model(epochs: int = 20):
     return ml.export_model(model, model_name)
 
 
-@shared_task
+@shared_task(name="batch_user_prediction")
 def batch_user_prediction(
     users_ids: list[int] | None = None,
     start: int = 0,
@@ -165,7 +194,7 @@ def batch_user_prediction(
     return ids
 
 
-@shared_task
+@shared_task(name="update_movie_position_embeddings")
 def update_movie_position_embeddings():
     """Update the movies embeddings.
 

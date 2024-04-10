@@ -2,7 +2,7 @@
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-Web application that recommends movies to users based on their preferences using collaborative filtering.
+Web application that recommends movies to users based on their preferences using collaborative filtering and machine learning.
 
 ![main](./screenshots/main.png)
 
